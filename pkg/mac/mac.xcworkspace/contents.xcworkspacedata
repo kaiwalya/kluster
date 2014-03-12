@@ -2,12 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:kluster-docs/kluster-docs.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:kluster-cli/kluster-cli.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:kluster/kluster.xcodeproj">
    </FileRef>
    <FileRef
