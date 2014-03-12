@@ -14,12 +14,12 @@
 int main(int argc, const char * argv[])
 {
 	using namespace kotton;
-	create()->become([](){
-		auto subscribe = self()->delegate([](){
+	create()->delegate("main", [](){
+		auto subscribe = self()->delegate("main", [](){
 			self()->become([](){
 				self()->unbecome();
 			});
-		}, "main");
+		});
 	
 		self()->become([](){
 			self()->nextMessage();

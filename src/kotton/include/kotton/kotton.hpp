@@ -52,7 +52,11 @@ namespace kotton {
 	struct context {
 		//virtual Subscription subscribe(topic &) = 0;
 		//virtual Publisher publish(topic &) = 0;
-		virtual Publisher delegate(userfunc f, std::string lastName) = 0;
+		Publisher delegate(std::string && name, userfunc && f) {return delegate(name, f);};
+		Publisher delegate(std::string & name, userfunc && f) {return delegate(name, f);};
+		Publisher delegate(std::string && name, userfunc & f) {return delegate(name, f);};
+		virtual Publisher delegate(std::string & name, userfunc & f) = 0;
+		
 		virtual void become(userfunc f) = 0;
 		virtual void unbecome() = 0;
 		virtual bool nextMessage() = 0;
