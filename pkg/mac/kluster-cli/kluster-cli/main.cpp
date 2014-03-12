@@ -13,35 +13,22 @@
 
 int main(int argc, const char * argv[])
 {
-	//using namespace kotton;
-	//wait(make([](){
+	using namespace kotton;
+	create()->become([](){
+		auto subscribe = self()->delegate([](){
+			self()->become([](){
+				self()->unbecome();
+			});
+		}, "main");
+	
+		self()->become([](){
+			self()->nextMessage();
+			self()->unbecome();
+		});
 		
-		struct print: kotton::message {
-			print(std::string msg): msg(msg) {}
-			std::string msg;
-		};
-		{
-			auto self = kotton::self();
-			self->send(print("Hello"));
-			self->send(print(" "));
-			self->send(print("World"));
-			self->send(print("!"));
-			self->send(print("\n"));
-			self->send(kotton::stop_message());
-		}
-		
-		for(;;) {
-			auto & msg = kotton::me()->top();
-			if (msg.isA<kotton::stop_message>()) {
-				break;
-			}
-			else if (msg.isA<print>()) {
-				std::cout << msg.asA<print>().msg;
-			}
-			else {
-				throw std::exception();
-			}
-		}
-	//}));
+		self()->unbecome();
+	});
+	
+	
 }
 

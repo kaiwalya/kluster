@@ -2,84 +2,55 @@
 #include <iostream>
 #include <exception>
 #include <assert.h>
+#include <stdio.h>
+#include <memory>
+
 #include "kotton/kotton.hpp"
 
 namespace kotton {
+	struct acontext;
+	using AContext = std::shared_ptr<acontext>;
+}
+static __thread kotton::acontext * _self = nullptr;
+static kotton::Context _globalContext = kotton::create();
+namespace kotton {
 	
-	struct _Ctx;
-	using Ctx = std::shared_ptr<_Ctx>;
-	struct _Ref;
-	using Ref = std::shared_ptr<_Ref>;
-	
-	static __thread _Ctx * currentContext;
-	struct _Ctx: _ctx {
+	struct acontext: context {
+		virtual Publisher delegate(userfunc f, std::string lastName) override {
+			printf("In delegate\n");
+			return nullptr;
+		};
+		virtual void become(userfunc f) override {
+		};
+		virtual void unbecome() override {
+		};
+		virtual bool nextMessage() override {
+			return false;
+		};
+		
+		Context self() {
+			return mThis.lock();
+		}
 
-		static Ctx current() {
-			if (currentContext) {
-				assert(!currentContext->mThis.expired());
-				return currentContext->mThis.lock();
-			}
-			else {
-				Ctx ret;
-				new _Ctx(ret);
-				assert(ret);
-				return ret;
-			}
+		acontext(AContext & ctx, std::string name) {
+			ctx.reset(this);
+			mThis = ctx;
+			mName = name;
 		}
-		
-		const message & top() override {
-			throw std::bad_function_call();
-		};
-		
-		ref make(userfunc && f) override {
-			throw std::bad_function_call();
-		}
-		
 	private:
-		std::weak_ptr<_Ctx> mThis;
-		_Ctx(Ctx & refOut){
-			refOut.reset(this);
-			mThis = refOut;
-		}
+		std::weak_ptr<acontext> mThis;
+		std::string mName;
+		
 	};
 	
-	static __thread _Ref * currentRef;
-	struct _Ref: _ref {
-		static Ref current() {
-			if (currentRef) {
-				assert(!currentRef->mThis.expired());
-				return currentRef->mThis.lock();
-			}
-			else {
-				Ref ret;
-				new _Ref(ret, _Ctx::current());
-				assert(ret);
-				return ret;
-			}
-		}
-		
-		void send(message &&) override {
-		};
-		
-		void waitForQuit() override {
-		};
-	private:
-		std::weak_ptr<_Ref> mThis;
-		Ctx mCtx;
-		_Ref(Ref & refOut, Ctx && ctx) {
-			refOut.reset(this);
-			mThis = refOut;
-			mCtx = ctx;
-		}
-	};
-	
-	
-	
-	ctx me() {
-		return _Ctx::current();
+	Context self() {
+		acontext * c = _self;
+		return c ? c->self() : _globalContext;
 	}
 	
-	ref self() {
-		return _Ref::current();
+	Context create() {
+		AContext ret;
+		new acontext(ret, "global");
+		return ret;
 	}
 }

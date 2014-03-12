@@ -1,3 +1,6 @@
+#if !defined(_KOTTON_H_)
+#define _KOTTON_H_
+
 #include <memory>
 #include <functional>
 #include <stack>
@@ -8,60 +11,63 @@
 
 namespace kotton {
 	using userfunc = std::function<void(void)>;
-	struct message;
 	
-	struct _ref;
-	using ref = std::shared_ptr<_ref>;
+	/*
+		Beware when using heap stack, you need to protect the stack using a mutex as it moves around cores
+	*/
 	
 	/**
-		Denotes an address of a mailbox. You can most messages to an address
+		value represents any state variable in a processor.
+		Things stored in this variable are preserved as the processor is scheduled on different threads.
+		Use this when things cannot be kept of the stack.
 	*/
-	struct _ref {
-		/**
-			Send a message to this address
-		*/
-		virtual void send(message &&) = 0;
-		
-		/**
-			Wait for the process servicing the address to quit
-		*/
-		virtual void waitForQuit() = 0;
+	struct value{
 	};
 	
 	/**
-	Static function get get your own address
+		Copyable value which can be passed around between processors
+		Can be used to become a publisher or subscriber on this topic
 	*/
-	ref self();
+	using topic = std::string;
 	
-	struct _ctx;
-	using ctx = std::shared_ptr<_ctx>;
 	/**
-		Represents a mailbox and a processor servicing it.
+		Get a pointer to this when you subscribe to a topic
 	*/
-	struct _ctx {
-		/**Read message form the mailbox.*/
-		virtual const message & top() = 0;
-		/**Create a new mailbox and use userfunc as the service routine*/
-		virtual ref make(userfunc && f) = 0;
+	struct subscription {
+		bool nextMessage();
 	};
-	/**Static method to get the current mailbox */
-	ctx me();
+	using Subscription = std::shared_ptr<subscription>;
 	
-	/**A message which can be sent to a mailbox*/
-	struct message {
-		virtual ~message(){}
-
-		/**Checks if a message is of a particular type*/
-		template<typename T> bool isA() const{
-			return typeid(*this) == typeid(T);
-		}
-		
-		/**Convert a message to the given type*/
-		template<typename T> const T & asA() const{
-			return dynamic_cast<const T &>(*this);
-		}
+	/**
+		Get a pointer to this when you are publisher for a topic
+	*/
+	struct publisher {
+		void postMessage();
+	};
+	using Publisher = std::shared_ptr<publisher>;
+	
+	
+	struct context;
+	using Context = std::shared_ptr<context>;
+	struct context {
+		//virtual Subscription subscribe(topic &) = 0;
+		//virtual Publisher publish(topic &) = 0;
+		virtual Publisher delegate(userfunc f, std::string lastName) = 0;
+		virtual void become(userfunc f) = 0;
+		virtual void unbecome() = 0;
+		virtual bool nextMessage() = 0;
 	};
 	
-	struct start_message: message {};
-	struct stop_message: message {};
+	/*
+		Returns the Global System Context or the Context which created the current thread
+	*/
+	Context self();
+	
+	/*
+		Creates a new context
+	*/
+	Context create();
 }
+
+#endif
+
