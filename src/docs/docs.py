@@ -38,8 +38,10 @@ class Builder:
 		Build action, calls doxygen
 		'''
 
-		self.showInfo("Source Directory:", sourceDir)
-		self.showInfo("Output Directory:", outputDir)
+		outputDir = os.path.abspath(outputDir)
+		sourceDir = os.path.abspath(sourceDir)
+		#self.showInfo("Source Directory:", sourceDir)
+		#self.showInfo("Output Directory:", outputDir)
 
 		fDoxy = io.FileIO("Doxyfile")
 		fDoxyData = fDoxy.readall()
@@ -54,7 +56,6 @@ class Builder:
 
 		fTemp = tempfile.TemporaryFile()
 
-		self.showInfo(fTemp)
 		fTemp.write(fDoxyData)
 		fTemp.write(appendData)
 		fTemp.flush()
@@ -70,6 +71,11 @@ class Builder:
 		fTemp.close()
 		return 0
 
-	def clean(self):
+	def clean(self, outputDir):
 		'''Clean actions, removes the generated output files'''
+		outputDir = os.path.abspath(outputDir)
+
+		self.showInfo("Removing: ", outputDir)
+		assert outputDir.endswith("build")
+		os.unlink(outputDir)
 		return 0

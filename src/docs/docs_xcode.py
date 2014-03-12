@@ -25,6 +25,7 @@ if __name__ == "__main__":
 	if outputDir is None or len(outputDir) == 0:
 		builder.showError("Cannot find OUTPUT_DIRECTORY in environment")
 		sys.exit(1)
+	outputDir = os.path.abspath(outputDir)
 	builder.showInfo("Output Directory:", outputDir)
 
 	
@@ -35,7 +36,6 @@ if __name__ == "__main__":
 		sys.exit(1)
 	sourceDir = os.path.abspath(sourceDir)
 	builder.showInfo("Source Directory:", sourceDir)
-	print(sourceDir)
 
 
 	action = None;
@@ -53,5 +53,5 @@ if __name__ == "__main__":
 	elif action == "clean":
 		ret = builder.clean(outputDir);
 	else:
-		print("Didnot understand action: \"" + action + "\"", file=sys.stderr)
+		builder.showError("Didnot understand action: \"" + action + "\"")
 	sys.exit(ret)
