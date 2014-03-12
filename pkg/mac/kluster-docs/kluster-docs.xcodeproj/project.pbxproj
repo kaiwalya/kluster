@@ -1,0 +1,118 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		0A814AC018CFD22A00CA9AD2 /* docs_xcode.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = docs_xcode.py; path = ../../../src/docs/docs_xcode.py; sourceTree = "<group>"; };
+		0A814AC118CFD22A00CA9AD2 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../../src/docs/Doxyfile; sourceTree = "<group>"; };
+		0A814AC218CFD43300CA9AD2 /* docs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = docs.py; path = ../../../src/docs/docs.py; sourceTree = "<group>"; };
+		0A814AC318CFD83F00CA9AD2 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Common.xcconfig; path = ../Common.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0A814AB318CFCDE000CA9AD2 = {
+			isa = PBXGroup;
+			children = (
+				0A814AC318CFD83F00CA9AD2 /* Common.xcconfig */,
+				0A814AC218CFD43300CA9AD2 /* docs.py */,
+				0A814AC018CFD22A00CA9AD2 /* docs_xcode.py */,
+				0A814AC118CFD22A00CA9AD2 /* Doxyfile */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		0A814ABA18CFCDF700CA9AD2 /* kluster-docs */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = ./docs_xcode.py;
+			buildConfigurationList = 0A814ABB18CFCDF700CA9AD2 /* Build configuration list for PBXLegacyTarget "kluster-docs" */;
+			buildPhases = (
+			);
+			buildToolPath = python3;
+			buildWorkingDirectory = ../../../src/docs;
+			dependencies = (
+			);
+			name = "kluster-docs";
+			passBuildSettingsInEnvironment = 1;
+			productName = "kluster-docs";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		0A814AB418CFCDE000CA9AD2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+			};
+			buildConfigurationList = 0A814AB718CFCDE000CA9AD2 /* Build configuration list for PBXProject "kluster-docs" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0A814AB318CFCDE000CA9AD2;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0A814ABA18CFCDF700CA9AD2 /* kluster-docs */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		0A814AB818CFCDE000CA9AD2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0A814AC318CFD83F00CA9AD2 /* Common.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		0A814AB918CFCDE000CA9AD2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0A814AC318CFD83F00CA9AD2 /* Common.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		0A814ABC18CFCDF700CA9AD2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		0A814ABD18CFCDF700CA9AD2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0A814AB718CFCDE000CA9AD2 /* Build configuration list for PBXProject "kluster-docs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A814AB818CFCDE000CA9AD2 /* Debug */,
+				0A814AB918CFCDE000CA9AD2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0A814ABB18CFCDF700CA9AD2 /* Build configuration list for PBXLegacyTarget "kluster-docs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A814ABC18CFCDF700CA9AD2 /* Debug */,
+				0A814ABD18CFCDF700CA9AD2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0A814AB418CFCDE000CA9AD2 /* Project object */;
+}

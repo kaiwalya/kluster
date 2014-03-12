@@ -1,0 +1,16 @@
+//
+//  Config.xcconfig
+//  
+//
+//  Created by Kaiwalya Kher on 3/10/14.
+//
+//
+
+USER_HEADER_SEARCH_PATHS = $(PROJECT_DIR)/../../../src/kotton/include
+
+OUTPUT_DIRECTORY = $(PROJECT_DIR)/../../../build
+SOURCE_DIRECTORY = $(PROJECT_DIR)/../../../src
+
+GCC_C_LANGUAGE_STANDARD = c11
+CLANG_CXX_LANGUAGE_STANDARD = c++11
+CLANG_CXX_LIBRARY = libc++
