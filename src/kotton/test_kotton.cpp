@@ -6,15 +6,17 @@ int main(int argc, const char * argv[])
 {
 
 	using namespace kotton;
-	
-	auto root = newFiber([](){
-		newFiber([] () {
-			printf("Hello ");
-		})->start();
-		printf(" world!\n");
+	auto f = fiber::create([](){
+		std::cout << "Hello World! - outer - entered" << std::endl;
+		auto f = fiber::create([](){
+			std::cout << "Hello World! - inner" << std::endl;
+		});
+		std::cout << "Hello World! - outer - starting inner" << std::endl;
+		f->start();
+		std::cout << "Hello World! - outer - exiting" << std::endl;
+		delete f;
 	});
-
-	root->start();
-	std::this_thread::sleep_for((std::chrono::seconds)1);
+	f->start();
+	delete f;
 }
 

@@ -11,6 +11,9 @@
 		0A6A244318D0D3D300F610DE /* test_kotton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A48793818D0CF1F00218A98 /* test_kotton.cpp */; };
 		0A814AD018CFFE4E00CA9AD2 /* kotton.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0A814ACE18CFFE4E00CA9AD2 /* kotton.hpp */; };
 		0A814AD118CFFE4E00CA9AD2 /* kotton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A814ACF18CFFE4E00CA9AD2 /* kotton.cpp */; };
+		0AEDCB5518D1D08600DAB5B1 /* kotton_fiber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AEDCB5318D1D08600DAB5B1 /* kotton_fiber.cpp */; };
+		0AEDCB5618D1D08600DAB5B1 /* kotton_fiber.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0AEDCB5418D1D08600DAB5B1 /* kotton_fiber.hpp */; };
+		0AEDCB5818D1D09F00DAB5B1 /* fiber.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0AEDCB5718D1D09F00DAB5B1 /* fiber.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		0A814AA118CD9BD200CA9AD2 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Common.xcconfig; path = ../Common.xcconfig; sourceTree = "<group>"; };
 		0A814ACE18CFFE4E00CA9AD2 /* kotton.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = kotton.hpp; sourceTree = "<group>"; };
 		0A814ACF18CFFE4E00CA9AD2 /* kotton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kotton.cpp; sourceTree = "<group>"; };
+		0AEDCB5318D1D08600DAB5B1 /* kotton_fiber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kotton_fiber.cpp; sourceTree = "<group>"; };
+		0AEDCB5418D1D08600DAB5B1 /* kotton_fiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = kotton_fiber.hpp; sourceTree = "<group>"; };
+		0AEDCB5718D1D09F00DAB5B1 /* fiber.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fiber.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +108,8 @@
 			children = (
 				0A814ACC18CFFE4E00CA9AD2 /* include */,
 				0A814ACF18CFFE4E00CA9AD2 /* kotton.cpp */,
+				0AEDCB5418D1D08600DAB5B1 /* kotton_fiber.hpp */,
+				0AEDCB5318D1D08600DAB5B1 /* kotton_fiber.cpp */,
 				0A48793818D0CF1F00218A98 /* test_kotton.cpp */,
 			);
 			path = kotton;
@@ -119,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				0A814ACE18CFFE4E00CA9AD2 /* kotton.hpp */,
+				0AEDCB5718D1D09F00DAB5B1 /* fiber.hpp */,
 			);
 			path = kotton;
 			sourceTree = "<group>";
@@ -130,6 +139,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AEDCB5818D1D09F00DAB5B1 /* fiber.hpp in Headers */,
+				0AEDCB5618D1D08600DAB5B1 /* kotton_fiber.hpp in Headers */,
 				0A814AD018CFFE4E00CA9AD2 /* kotton.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -224,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A814AD118CFFE4E00CA9AD2 /* kotton.cpp in Sources */,
+				0AEDCB5518D1D08600DAB5B1 /* kotton_fiber.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
