@@ -11,66 +11,75 @@
 
 namespace kotton {
 	using userfunc = std::function<void(void)>;
-	
-	/*
-		Beware when using heap stack, you need to protect the stack using a mutex as it moves around cores
-	*/
-	
-	/**
-		value represents any state variable in a processor.
-		Things stored in this variable are preserved as the processor is scheduled on different threads.
-		Use this when things cannot be kept of the stack.
-	*/
-	struct value{
-	};
-	
-	/**
-		Copyable value which can be passed around between processors
-		Can be used to become a publisher or subscriber on this topic
-	*/
+	using name = std::string;
 	using topic = std::string;
-	
-	/**
-		Get a pointer to this when you subscribe to a topic
-	*/
-	struct subscription {
-		bool nextMessage();
+		
+	struct fiber;
+	struct fiber_info;
+	struct thread;
+		
+	struct value {
+		value() = delete;
+		value(const value &) = delete;
+		value& operator = (const value&) = delete;
 	};
+	
+	struct subscription {
+		value & pop();
+	};
+	
 	using Subscription = std::shared_ptr<subscription>;
 	
-	/**
-		Get a pointer to this when you are publisher for a topic
-	*/
-	struct publisher {
-		void postMessage();
-	};
-	using Publisher = std::shared_ptr<publisher>;
-	
-	
-	struct context;
-	using Context = std::shared_ptr<context>;
-	struct context {
-		//virtual Subscription subscribe(topic &) = 0;
-		//virtual Publisher publish(topic &) = 0;
-		Publisher delegate(std::string && name, userfunc && f) {return delegate(name, f);};
-		Publisher delegate(std::string & name, userfunc && f) {return delegate(name, f);};
-		Publisher delegate(std::string && name, userfunc & f) {return delegate(name, f);};
-		virtual Publisher delegate(std::string & name, userfunc & f) = 0;
+	struct fiber_info {
+		/**Create root level fiber_info*/
+		fiber_info(name &n, userfunc & f): mName(n), mFunc(f), mParent(nullptr) {}
 		
-		virtual void become(userfunc f) = 0;
-		virtual void unbecome() = 0;
-		virtual bool nextMessage() = 0;
+		/**Create a child fiber_info*/
+		fiber_info * newFiber(name &n, userfunc & f) {
+			return new fiber_info(this, n, f);
+		}
+		
+		fiber_info(fiber_info * parent, name &n, userfunc & f): mName(n), mFunc(f), mParent(parent) {}
+		name mName;
+		userfunc mFunc;
+		fiber_info * mParent;
+		
 	};
 	
-	/*
-		Returns the Global System Context or the Context which created the current thread
-	*/
-	Context self();
+	struct fiber {
+		fiber(name & n, userfunc & f);
+		fiber(name & n, userfunc && f) : fiber(n, f) {}
+		fiber(name && n, userfunc & f) : fiber(n, f) {}
+		fiber(name && n, userfunc && f) : fiber(n, f) {}
+		
+		Subscription subscribe(topic & t);
+		Subscription subscribe(topic && t) {return subscribe(t);}
+		
+		void start();
+	private:
+		std::unique_ptr<fiber_info> mInfo;
+	};
+	using Fiber = std::shared_ptr<fiber>;
 	
-	/*
-		Creates a new context
-	*/
-	Context create();
+	inline Fiber newFiber(name & n, userfunc & f) {
+		return Fiber(new fiber(n,f));
+	}
+	
+	inline Fiber newFiber(name & n, userfunc && f) {
+		return newFiber(n,f);
+	}
+	inline Fiber newFiber(name && n, userfunc & f) {
+		return newFiber(n,f);
+	}
+	inline Fiber newFiber(name && n, userfunc && f) {
+		return newFiber(n,f);
+	}
+	
+	struct err_not_implemented: std::exception {
+		const char * what() const noexcept override{
+			return "This feature is not implemented";
+		}
+	};
 }
 
 #endif
