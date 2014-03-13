@@ -2,7 +2,7 @@
 #define _KOTTON_FIBER_H
 
 /**
-	fibers - non pre-emptive, single threaded context switching between function objects
+	fibers - used for non pre-emptive, single threaded context switching between function objects
 	
 	* function objects dont take parameters because if we added extension,
 	we will need to change parameters, so each extension might define its
@@ -16,18 +16,19 @@
 
 */
 
-#include <functional>
 #include <exception>
 
-namespace kotton {
-	using userfunc = std::function<void(void)>;
+#include "kotton/userfunc.hpp"
 
+namespace kotton {
+
+	struct fiber;
+	
 	struct fiber {
 		static fiber * create(userfunc & f);
 		static fiber * create(userfunc && f) {return create(f);}
 		virtual ~fiber() {};
-		virtual void start() = 0;
-		
+		virtual void proceed() = 0;
 	};
 	
 	struct err_not_implemented: std::exception {

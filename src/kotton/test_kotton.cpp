@@ -12,11 +12,11 @@ int main(int argc, const char * argv[])
 			std::cout << "Hello World! - inner" << std::endl;
 		});
 		std::cout << "Hello World! - outer - starting inner" << std::endl;
-		f->start();
+		f->proceed();
 		std::cout << "Hello World! - outer - exiting" << std::endl;
 		delete f;
 	});
-	f->start();
+	f->proceed();
 	delete f;
 }
 

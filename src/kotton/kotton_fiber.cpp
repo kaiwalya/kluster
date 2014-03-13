@@ -10,8 +10,8 @@ namespace kotton {
 		return thread::create(f);
 	}
 	
-	void fiber_base::start() {
-		mFunc();
+	void fiber_base::proceed() {
+		mExec.proceed();
 	}
 
 	fiber * thread::create(userfunc & f) {
@@ -30,7 +30,7 @@ namespace kotton {
 		return __this_thread;
 	}
 	
-	void thread::start() {
+	void thread::proceed() {
 		
 		bool initDone;
 		thread::condition c;
@@ -44,7 +44,7 @@ namespace kotton {
 			}
 			{
 				
-				t->fiber_base::start();
+				t->fiber_base::proceed();
 			}
 			
 			{

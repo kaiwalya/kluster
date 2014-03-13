@@ -5,15 +5,19 @@
 
 #include "kotton/fiber.hpp"
 
+#include "kotton_execstack.hpp"
+
 namespace kotton {
-  
-	struct fiber_base: fiber {
-		fiber_base(fiber_base * parent, userfunc & f): mParent(parent), mFunc(f) {}
 		
-		void start() override;
+	struct fiber_base: fiber {
+		fiber_base(fiber_base * parent, userfunc & f): mParent(parent), mExec(f, mStack) {}
+		
+		void proceed() override;
 	private:
-		userfunc mFunc;
+		stack mStack;
+		execution mExec;
 		fiber_base * mParent;
+		fiber_base * mRoot;
 	};
 
 	/**Combines a fiber and a executing thread*/
@@ -37,7 +41,7 @@ namespace kotton {
 		locker lock() {return locker(m);}
 		
 		/**fiber_base override. Stars a new thread, calls base class start on the new thread*/
-		void start() override;
+		void proceed() override;
 		
 		~thread();
 
