@@ -7,8 +7,8 @@ int main(int argc, const char * argv[])
 
 	using namespace kotton;
 	
-	auto root = newFiber("root", [](){
-		newFiber("inner", [] () {
+	auto root = newFiber([](){
+		newFiber([] () {
 			printf("Hello ");
 		})->start();
 		printf(" world!\n");

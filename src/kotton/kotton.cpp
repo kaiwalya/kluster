@@ -79,13 +79,13 @@ namespace kotton {
 	}
 
 
-	fiber::fiber(name & n, userfunc & f) {
+	fiber::fiber(userfunc & f) {
 		auto currThread = thread::current();
 		if (currThread) {
-			mInfo = std::unique_ptr<fiber_info>(currThread->mCurrentInfo->newFiber(n,f));
+			mInfo = std::unique_ptr<fiber_info>(new fiber_info(currThread->mCurrentInfo, f));
 		}
 		else {
-			mInfo = std::unique_ptr<fiber_info>(new fiber_info(n,f));
+			mInfo = std::unique_ptr<fiber_info>(new fiber_info(f));
 		}
 	}
 	

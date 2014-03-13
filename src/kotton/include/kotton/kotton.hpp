@@ -11,7 +11,6 @@
 
 namespace kotton {
 	using userfunc = std::function<void(void)>;
-	using name = std::string;
 	using topic = std::string;
 		
 	struct fiber;
@@ -32,25 +31,19 @@ namespace kotton {
 	
 	struct fiber_info {
 		/**Create root level fiber_info*/
-		fiber_info(name &n, userfunc & f): mName(n), mFunc(f), mParent(nullptr) {}
+		fiber_info(userfunc & f): mFunc(f), mParent(nullptr) {}
 		
 		/**Create a child fiber_info*/
-		fiber_info * newFiber(name &n, userfunc & f) {
-			return new fiber_info(this, n, f);
-		}
-		
-		fiber_info(fiber_info * parent, name &n, userfunc & f): mName(n), mFunc(f), mParent(parent) {}
-		name mName;
+		fiber_info(fiber_info * parent, userfunc & f): mFunc(f), mParent(parent) {}
+
 		userfunc mFunc;
 		fiber_info * mParent;
 		
 	};
 	
 	struct fiber {
-		fiber(name & n, userfunc & f);
-		fiber(name & n, userfunc && f) : fiber(n, f) {}
-		fiber(name && n, userfunc & f) : fiber(n, f) {}
-		fiber(name && n, userfunc && f) : fiber(n, f) {}
+		fiber(userfunc & f);
+		fiber(userfunc && f) : fiber(f) {}
 		
 		Subscription subscribe(topic & t);
 		Subscription subscribe(topic && t) {return subscribe(t);}
@@ -61,20 +54,13 @@ namespace kotton {
 	};
 	using Fiber = std::shared_ptr<fiber>;
 	
-	inline Fiber newFiber(name & n, userfunc & f) {
-		return Fiber(new fiber(n,f));
+	inline Fiber newFiber(userfunc & f) {
+		return Fiber(new fiber(f));
 	}
 	
-	inline Fiber newFiber(name & n, userfunc && f) {
-		return newFiber(n,f);
+	inline Fiber newFiber(userfunc && f) {
+		return newFiber(f);
 	}
-	inline Fiber newFiber(name && n, userfunc & f) {
-		return newFiber(n,f);
-	}
-	inline Fiber newFiber(name && n, userfunc && f) {
-		return newFiber(n,f);
-	}
-	
 	struct err_not_implemented: std::exception {
 		const char * what() const noexcept override{
 			return "This feature is not implemented";
