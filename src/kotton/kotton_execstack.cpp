@@ -116,12 +116,14 @@ namespace kotton {
 	}
 
 	bool execution::proceed() {
+		assert(m_state == exec_state::paused || m_state == exec_state::notReady);
 		assert(!m_s.isCurrent());
 		swap();
 		return m_state == exec_state::paused;
 	}
 
 	void execution::yield() {
+		assert(m_state == exec_state::playing);
 		assert(m_s.isCurrent());
 		swap();
 	}

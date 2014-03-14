@@ -43,6 +43,17 @@ namespace kotton {
 	enum class exec_state {
 		notReady, paused, playing, finished
 	};
+	
+	/**
+		Maintains two jump buffs, one is valid (mostly, unless you are in swap() function)
+		Call self->yield only from self, like return from a function (thread will jump to whoever called you last time)
+		Call other->proceed to jump the thread to someone else's stack
+		
+		TODO:
+			We should be able to do this with just one jumpbuf?
+			The concept of exitbuf should be on the tls. Where it should jump to a scheduling function.
+			For cyclic jumps, A proceeds to B and B proceeds to A the exitbuf will be lost, i think...
+	*/
 	struct execution {
 		
 		execution(userfunc & f, const stack & s)
