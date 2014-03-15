@@ -10,16 +10,38 @@ namespace kotton {
 		return thread::create(f);
 	}
 	
-	void fiber_base::proceed() {
-		mExec.proceed();
+	fiber_base * fiber_base::current() {
+		return thread::currentFiber();
+	};
+	
+	fiber_base::~fiber_base() {
 	}
+	
+	void fiber_base::start() {
+		/**
+			We have permission to start, but let the schedular choose
+			Note, we use current because we want to return the control from current fiber
+			back to the schedular.
+		*/
+		current()->yield();
+	}
+	
+	bool fiber_base::proceed() {
+		return mExec.proceed();
+	}
+	
+	void fiber_base::yield() {
+		mExec.yield();
+	};
 
 	fiber * thread::create(userfunc & f) {
 		thread * curr = current();
 		if (curr) {
 			/**Create child fiber*/
 			assert(curr->mCurrentFiber);
-			return new fiber_base(curr->mCurrentFiber, f);
+			fiber_base * ret = new fiber_base(curr->mCurrentFiber, f);
+			curr->mFibers.push_back(ret);
+			return ret;
 		}
 		else {
 			return new thread(f);
@@ -30,7 +52,23 @@ namespace kotton {
 		return __this_thread;
 	}
 	
-	void thread::proceed() {
+	userfunc thread::scheduleCaller = [](){thread::_schedule();};
+	void thread::schedule() {
+		
+		while (mFibers.size()) {
+			mCurrentFiber = mFibers.front();
+			assert(mCurrentFiber->state() == exec_state::paused);
+			if (!mCurrentFiber->proceed()) {
+				assert(mCurrentFiber->state() == exec_state::finished);
+				/**Returning from somewhere else*/
+				if (mCurrentFiber->state() == exec_state::finished) {
+					mFibers.remove(mCurrentFiber);
+				}
+			}
+		}
+	}
+	
+	void thread::start() {
 		
 		bool initDone;
 		thread::condition c;
@@ -45,6 +83,9 @@ namespace kotton {
 			{
 				
 				t->fiber_base::proceed();
+				
+				/* The schedular should never return when there are fibers to schedule */
+				assert(t->mCurrentFiber != t && t->mFibers.size());
 			}
 			
 			{

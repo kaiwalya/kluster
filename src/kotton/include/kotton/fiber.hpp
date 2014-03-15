@@ -28,7 +28,7 @@ namespace kotton {
 		static fiber * create(userfunc & f);
 		static fiber * create(userfunc && f) {return create(f);}
 		virtual ~fiber() {};
-		virtual void proceed() = 0;
+		virtual void start() = 0;
 	};
 	
 	struct err_not_implemented: std::exception {
