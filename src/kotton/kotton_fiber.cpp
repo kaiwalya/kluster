@@ -6,7 +6,7 @@
 static __thread kotton::thread * __this_thread = nullptr;
 
 namespace kotton {
-	fiber * fiber::create(userfunc &f) {
+	std::shared_ptr<fiber> fiber::create(userfunc &f) {
 		return thread::create(f);
 	}
 	
@@ -33,18 +33,18 @@ namespace kotton {
 		mExec.yield();
 	};
 
-	fiber * thread::create(userfunc & f) {
+	std::shared_ptr<fiber> thread::create(userfunc & f) {
 		thread * curr = current();
 		if (curr) {
 			/**Create child fiber*/
 			assert(curr->mCurrentFiber);
-			fiber_base * ret = new fiber_base(curr->mCurrentFiber, f);
+			auto ret = std::make_shared<fiber_base>(curr->mCurrentFiber, f);
 			ret->setThread(curr);
 			curr->mFibers.push_back(ret);
 			return ret;
 		}
 		else {
-			return new thread(f);
+			return std::shared_ptr<thread>(new thread(f));
 		}
 	}
 	
@@ -56,11 +56,12 @@ namespace kotton {
 	void thread::schedule() {
 		
 		while (mFibers.size()) {
-			auto fChoice = mFibers.front();
+			auto fRefChoice = mFibers.front();
+			auto fChoice = fRefChoice.get();
 			assert(fChoice->state() == exec_state::paused);
 			
 			mCurrentFiber = fChoice;
-			bool proceed = mCurrentFiber->proceed();
+			bool proceed = fChoice->proceed();
 			assert(mCurrentFiber == fChoice);
 			mCurrentFiber = this;
 			
@@ -68,7 +69,7 @@ namespace kotton {
 				assert(fChoice->state() == exec_state::finished);
 				/**Returning from somewhere else*/
 				if (fChoice->state() == exec_state::finished) {
-					mFibers.remove(fChoice);
+					mFibers.remove(fRefChoice);
 				}
 			}
 		}
@@ -122,7 +123,9 @@ namespace kotton {
 		//Is this leagal? If yes, we can cleanup here, we will have to do it in the schedular
 		assert(target != mCurrentFiber);
 		target->setThread(nullptr);
-		mFibers.remove(target);
+		mFibers.remove_if([target](const std::shared_ptr<fiber_base> & ref){
+			return target == ref.get();
+		});
 	}
 	
 	thread::~thread() {

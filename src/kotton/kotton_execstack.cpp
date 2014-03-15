@@ -9,9 +9,10 @@
 #include "kotton_execstack.hpp"
 
 
-static const size_t gPageSize = getpagesize();
+static const size_t gPageSize = 1*getpagesize();
 static const size_t guardSize = sizeof(int64_t) * 2;
-static const char guardData[sizeof(uint64_t)] = "kotton!";
+static const char guardData[sizeof(uint64_t)] = {'k', 'o', 't', 't', 'o', 'n', '!', '!', };
+//static const char guardData[sizeof(uint64_t) + 1] = "kotton!!";
 
 namespace kotton {
 	stack::stack(size_t size):sz(size ? size : gPageSize), loc(new char[sz]) {

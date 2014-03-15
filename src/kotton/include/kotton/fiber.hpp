@@ -17,6 +17,7 @@
 */
 
 #include <exception>
+#include <memory>
 
 #include "kotton/userfunc.hpp"
 
@@ -25,8 +26,8 @@ namespace kotton {
 	struct fiber;
 	
 	struct fiber {
-		static fiber * create(userfunc & f);
-		static fiber * create(userfunc && f) {return create(f);}
+		static std::shared_ptr<fiber> create(userfunc & f);
+		static std::shared_ptr<fiber> create(userfunc && f) {return create(f);}
 		virtual ~fiber() {};
 		virtual void start() = 0;
 	};

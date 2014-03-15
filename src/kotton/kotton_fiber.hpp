@@ -56,13 +56,13 @@ namespace kotton {
 		static userfunc scheduleCaller;
 	public:
 		/**Create new thread or fiber_base*/
-		static fiber * create(userfunc & f);
+		static std::shared_ptr<fiber> create(userfunc & f);
 		
 	private:
 		/**Private constructor, called form static create if required*/
 		thread(userfunc & f): fiber_base(nullptr, scheduleCaller), mThread(), mCurrentFiber(nullptr) {
 			fiber_base::setThread(this);
-			auto first = new fiber_base(this, f);
+			auto first = std::make_shared<fiber_base>(this, f);
 			first->setThread(this);
 			mFibers.push_back(first);
 		}
@@ -85,8 +85,9 @@ namespace kotton {
 	private:
 		mutex m;
 		std::thread mThread;
-		std::list<fiber_base *> mFibers;
+		std::list<std::shared_ptr<fiber_base>> mFibers;
 		fiber_base * mCurrentFiber;
+		
 	};
 
 }
