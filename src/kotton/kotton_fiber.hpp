@@ -17,7 +17,7 @@ namespace kotton {
 		~fiber_base();
 		const exec_state & state() { return mExec.state();}
 		void start() override;
-		static fiber_base * current();
+
 		/**
 			Jump to this fiber_base. Returns true if there is still processing remaining.
 		*/
@@ -51,7 +51,7 @@ namespace kotton {
 		
 	public:
 		/**Find the current fiber*/
-		static fiber_base * currentFiber() {return current()->mCurrentFiber;}
+		fiber_base * currentFiber() {return mCurrentFiber;}
 	
 	private:
 		void schedule();

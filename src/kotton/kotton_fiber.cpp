@@ -10,9 +10,6 @@ namespace kotton {
 		return thread::create(f);
 	}
 	
-	fiber_base * fiber_base::current() {
-		return thread::currentFiber();
-	};
 	
 	fiber_base::~fiber_base() {
 	}
@@ -23,7 +20,7 @@ namespace kotton {
 			Note, we use current because we want to return the control from current fiber
 			back to the schedular.
 		*/
-		current()->yield();
+		mRoot->currentFiber()->yield();
 	}
 	
 	bool fiber_base::proceed() {
