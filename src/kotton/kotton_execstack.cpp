@@ -2,9 +2,11 @@
 #include <stdint.h>
 #include <cstring>
 #include <assert.h>
+#include <stdlib.h>
 
 //Unix specific :( for getpagesize
 #include <unistd.h>
+
 
 #include "kotton_execstack.hpp"
 
@@ -15,7 +17,8 @@ static const char guardData[sizeof(uint64_t)] = {'k', 'o', 't', 't', 'o', 'n', '
 //static const char guardData[sizeof(uint64_t) + 1] = "kotton!!";
 
 namespace kotton {
-	stack::stack(size_t size):sz(size ? size : gPageSize), loc(new char[sz]) {
+	stack::stack(size_t size):sz(size ? size : gPageSize), loc((char *)valloc(sz)) {
+		printf("New Stack %p - %p\n", loc, loc+sz-1);
 		installGuard();
 	}
 	

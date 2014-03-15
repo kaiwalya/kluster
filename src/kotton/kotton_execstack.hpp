@@ -7,6 +7,11 @@
 #include "kotton/userfunc.hpp"
 
 namespace kotton {
+
+	//A note on custom stacks:
+	//http://rethinkdb.com/blog/handling-stack-overflow-on-custom-stacks/
+	
+	
 	struct stack {
 		const size_t sz;
 		char * const loc;
@@ -15,7 +20,7 @@ namespace kotton {
 		
 		~stack() {
 			checkGuard();
-			delete [] loc;
+			free(loc);
 		}
 		
 		inline bool isCurrent () const {
