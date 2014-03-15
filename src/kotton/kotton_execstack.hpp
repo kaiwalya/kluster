@@ -66,6 +66,8 @@ namespace kotton {
 		bool proceed();
 		void yield();
 		
+		const exec_state & state() {return m_state;}
+		
 	private:
 
 		bool enter();
