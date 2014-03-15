@@ -9,6 +9,8 @@
 #include "kotton_execstack.hpp"
 
 namespace kotton {
+
+	struct thread;
 		
 	struct fiber_base: fiber {
 		fiber_base(fiber_base * parent, userfunc & f): mParent(parent), mExec(f, mStack), mYieldReason(0) {}
@@ -20,6 +22,8 @@ namespace kotton {
 			Jump to this fiber_base. Returns true if there is still processing remaining.
 		*/
 		virtual bool proceed();
+		
+		void attach(thread * root) {mRoot = root;}
 		
 		/**
 			Jump back to whoever called proceed
@@ -36,7 +40,7 @@ namespace kotton {
 		int64_t mYieldReason;
 		std::list<fiber_base *> mBlockedToFinish;
 		fiber_base * mParent;
-		fiber_base * mRoot;
+		thread * mRoot;
 	};
 
 	/**Combines a fiber and a executing thread*/
@@ -60,7 +64,10 @@ namespace kotton {
 	private:
 		/**Private constructor, called form static create if required*/
 		thread(userfunc & f): fiber_base(nullptr, scheduleCaller), mThread(), mCurrentFiber(nullptr) {
-			mFibers.push_back(new fiber_base(this, f));
+			fiber_base::attach(this);
+			auto first = new fiber_base(this, f);
+			first->attach(this);
+			mFibers.push_back(first);
 		}
 		
 	public:

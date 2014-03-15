@@ -40,6 +40,7 @@ namespace kotton {
 			/**Create child fiber*/
 			assert(curr->mCurrentFiber);
 			fiber_base * ret = new fiber_base(curr->mCurrentFiber, f);
+			ret->attach(curr);
 			curr->mFibers.push_back(ret);
 			return ret;
 		}
