@@ -18,7 +18,7 @@ static const char guardData[sizeof(uint64_t)] = {'k', 'o', 't', 't', 'o', 'n', '
 
 namespace kotton {
 	stack::stack(size_t size):sz(size ? size : gPageSize), loc((char *)valloc(sz)) {
-		printf("New Stack %p - %p\n", loc, loc+sz-1);
+		//printf("New Stack %p - %p\n", loc, loc+sz-1);
 		installGuard();
 	}
 	
