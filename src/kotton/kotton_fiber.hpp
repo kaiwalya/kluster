@@ -13,8 +13,10 @@ namespace kotton {
 	struct thread;
 		
 	struct fiber_base: fiber {
-		fiber_base(fiber_base * parent, userfunc & f): mParent(parent), mExec(f, mStack), mYieldReason(0) {}
+		fiber_base(fiber_base * parent, userfunc & f): mParent(parent), mExec(f, mStack) {}
+
 		~fiber_base();
+		
 		const exec_state & state() { return mExec.state();}
 		void start() override;
 
@@ -23,22 +25,17 @@ namespace kotton {
 		*/
 		virtual bool proceed();
 		
-		void attach(thread * root) {mRoot = root;}
+		
+		void setThread(thread * root) {mRoot = root;}
 		
 		/**
 			Jump back to whoever called proceed
 		*/
 		virtual void yield();
 		
-		/**
-			Set Resons for yield
-		*/
-		virtual int64_t & yieldReason() {return mYieldReason;}
 	private:
 		stack mStack;
 		execution mExec;
-		int64_t mYieldReason;
-		std::list<fiber_base *> mBlockedToFinish;
 		fiber_base * mParent;
 		thread * mRoot;
 	};
@@ -64,9 +61,9 @@ namespace kotton {
 	private:
 		/**Private constructor, called form static create if required*/
 		thread(userfunc & f): fiber_base(nullptr, scheduleCaller), mThread(), mCurrentFiber(nullptr) {
-			fiber_base::attach(this);
+			fiber_base::setThread(this);
 			auto first = new fiber_base(this, f);
-			first->attach(this);
+			first->setThread(this);
 			mFibers.push_back(first);
 		}
 		
@@ -81,7 +78,10 @@ namespace kotton {
 		void start() override;
 		
 		~thread();
-
+		
+	public:
+		void onKill(fiber_base * who);
+		
 	private:
 		mutex m;
 		std::thread mThread;

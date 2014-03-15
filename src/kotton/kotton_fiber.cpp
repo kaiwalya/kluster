@@ -10,8 +10,10 @@ namespace kotton {
 		return thread::create(f);
 	}
 	
-	
 	fiber_base::~fiber_base() {
+		if (state() != exec_state::finished) {
+			mRoot->onKill(this);
+		}
 	}
 	
 	void fiber_base::start() {
@@ -37,7 +39,7 @@ namespace kotton {
 			/**Create child fiber*/
 			assert(curr->mCurrentFiber);
 			fiber_base * ret = new fiber_base(curr->mCurrentFiber, f);
-			ret->attach(curr);
+			ret->setThread(curr);
 			curr->mFibers.push_back(ret);
 			return ret;
 		}
@@ -54,16 +56,25 @@ namespace kotton {
 	void thread::schedule() {
 		
 		while (mFibers.size()) {
-			mCurrentFiber = mFibers.front();
-			assert(mCurrentFiber->state() == exec_state::paused);
-			if (!mCurrentFiber->proceed()) {
-				assert(mCurrentFiber->state() == exec_state::finished);
+			auto fChoice = mFibers.front();
+			assert(fChoice->state() == exec_state::paused);
+			
+			mCurrentFiber = fChoice;
+			bool proceed = mCurrentFiber->proceed();
+			assert(mCurrentFiber == fChoice);
+			mCurrentFiber = this;
+			
+			if (!proceed) {
+				assert(fChoice->state() == exec_state::finished);
 				/**Returning from somewhere else*/
-				if (mCurrentFiber->state() == exec_state::finished) {
-					mFibers.remove(mCurrentFiber);
+				if (fChoice->state() == exec_state::finished) {
+					mFibers.remove(fChoice);
 				}
 			}
 		}
+		
+		/* The schedular should never return when there are fibers to schedule */
+		assert(!mFibers.size());
 	}
 	
 	void thread::start() {
@@ -83,7 +94,8 @@ namespace kotton {
 				t->fiber_base::proceed();
 				
 				/* The schedular should never return when there are fibers to schedule */
-				assert(t->mCurrentFiber != t && t->mFibers.size());
+				assert(t->mCurrentFiber == t);
+				assert(!t->mFibers.size());
 			}
 			
 			{
@@ -104,6 +116,13 @@ namespace kotton {
 			}
 			assert(mThread.joinable());
 		}
+	}
+	
+	void thread::onKill(kotton::fiber_base *target) {
+		//Is this leagal? If yes, we can cleanup here, we will have to do it in the schedular
+		assert(target != mCurrentFiber);
+		target->setThread(nullptr);
+		mFibers.remove(target);
 	}
 	
 	thread::~thread() {
