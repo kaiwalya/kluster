@@ -6,7 +6,9 @@
 //
 //
 
-USER_HEADER_SEARCH_PATHS = $(PROJECT_DIR)/../../../src/kotton/include
+USER_HEADER_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/../../../src/kotton/include
+HEADER_SEARCH_PATHS = $(inherited) /usr/local/include
+LIBRARY_SEARCH_PATHS = $(inherited) /usr/local/lib
 
 OUTPUT_DIRECTORY = $(PROJECT_DIR)/../../../build
 SOURCE_DIRECTORY = $(PROJECT_DIR)/../../../src
@@ -14,3 +16,6 @@ SOURCE_DIRECTORY = $(PROJECT_DIR)/../../../src
 GCC_C_LANGUAGE_STANDARD = c11
 CLANG_CXX_LANGUAGE_STANDARD = c++11
 CLANG_CXX_LIBRARY = libc++
+
+OTHER_LDFLAGS = $(inherited) -lzmq
+
