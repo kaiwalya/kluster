@@ -6,7 +6,9 @@
 //
 //
 
-USER_HEADER_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/../../../src/kotton/include
+REPO_ROOT = $(PROJECT_DIR)/../../..
+
+USER_HEADER_SEARCH_PATHS = $(inherited) $(REPO_ROOT)/src/kotton/include $(REPO_ROOT)/src/external/cppzmq
 HEADER_SEARCH_PATHS = $(inherited) /usr/local/include
 LIBRARY_SEARCH_PATHS = $(inherited) /usr/local/lib
 
